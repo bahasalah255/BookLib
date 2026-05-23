@@ -21,7 +21,17 @@ const register = async (req, res) => {
     return res.status(500).json({ message: 'Erreur serveur.', error: err.message });
   }
 };
-
+const getUsersCount = async (req,res) => {
+  try {
+    const count = await User.countDocuments();
+    return res.status(200).json({
+      success : true,
+      count : count
+    })
+  } catch (err) {
+    return res.status(500).json({ message: 'Erreur serveur.', error: err.message });
+  }
+}
 const login = async (req, res) => {
   const { email, motDePasse } = req.body;
 
@@ -56,4 +66,4 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+module.exports = { register, login , getUsersCount};

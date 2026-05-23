@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { BookOpen, Bookmark, Crown, Plus, Search, Loader2 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import BookCard from "../components/BookCard";
+import Stats from '../components/Stats.jsx';
 import BookTable from "../components/BookTable";
 import BorrowTable from "../components/BorrowTable";
 import Modal from "../components/Modal";
@@ -142,10 +143,10 @@ export default function Dashboard() {
   };
 
   const navItems = [
-    { key: SECTIONS.CATALOGUE, label: "Catalogue", icon: "📚" },
-    { key: SECTIONS.EMPRUNTS, label: "Mes Emprunts", icon: "🔖" },
+    { key: SECTIONS.CATALOGUE, label: "Catalogue" },
+    { key: SECTIONS.EMPRUNTS, label: "Mes Emprunts"},
     ...(isAdmin()
-      ? [{ key: SECTIONS.ADMIN, label: "Gestion Admin", icon: "👑" }]
+      ? [{ key: SECTIONS.ADMIN, label: "Gestion Admin" }]
       : []),
   ];
 
@@ -190,9 +191,11 @@ export default function Dashboard() {
 
         {/* Main content */}
         <main className="flex-1 p-6 pb-24 md:pb-6">
+          <h2 className="text-3xl font-bold text-primary">Tableau De Bord</h2>
+          <Stats/>
           {/* Catalogue */}
           {section === SECTIONS.CATALOGUE && (
-            <div className="space-y-5">
+            <div className="space-y-5 pt-[170px]">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-primary">Catalogue des livres</h2>
               </div>
