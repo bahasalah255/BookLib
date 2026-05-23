@@ -1,42 +1,24 @@
 const amqp = require('amqplib');
 
-const QUEUE = 'emprunt_effectue';
-
-let channel = null;
-
-const connectPublisher = async () => {
-  try {
-    const connection = await amqp.connect(process.env.RABBITMQ_URL);
-    channel = await connection.createChannel();
-
-    await channel.assertQueue(QUEUE, { durable: true });
-
-    console.log(`[RabbitMQ] Publisher connecté à la queue "${QUEUE}".`);
-
-    // Reconnect on connection close
-    connection.on('close', () => {
-      console.warn('[RabbitMQ] Connexion fermée, reconnexion dans 5s...');
-      channel = null;
-      setTimeout(connectPublisher, 5000);
-    });
-  } catch (err) {
-    console.error('[RabbitMQ] Connexion échouée, nouvelle tentative dans 5s...', err.message);
-    setTimeout(connectPublisher, 5000);
+const publishMessage = async (queue, message, retries = 5) => {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const connection = await amqp.connect(process.env.RABBITMQ_URL);
+      const channel = await connection.createChannel();
+      await channel.assertQueue(queue, { durable: true });
+      channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)), { persistent: true });
+      console.log(`[RabbitMQ] Message publié sur "${queue}":`, JSON.stringify(message));
+      await channel.close();
+      await connection.close();
+      return;
+    } catch (err) {
+      console.error(`[RabbitMQ] Tentative ${attempt}/${retries} échouée :`, err.message);
+      if (attempt < retries) {
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      }
+    }
   }
+  console.error('[RabbitMQ] Échec de publication après toutes les tentatives.');
 };
 
-const publishMessage = (livreId, action) => {
-  if (!channel) {
-    console.error('[RabbitMQ] Le canal n\'est pas disponible. Message non envoyé.');
-    return false;
-  }
-
-  const message = JSON.stringify({ livreId, action });
-
-  channel.sendToQueue(QUEUE, Buffer.from(message), { persistent: true });
-
-  console.log(`[RabbitMQ] Message publié : ${message}`);
-  return true;
-};
-
-module.exports = { connectPublisher, publishMessage };
+module.exports = { publishMessage };

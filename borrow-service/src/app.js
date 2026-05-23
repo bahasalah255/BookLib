@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const borrowRoutes = require('./routes/borrow.routes');
-const { connectPublisher } = require('./rabbitmq/publisher');
 
 const app = express();
 
@@ -18,8 +17,7 @@ const MONGO_URI = process.env.MONGO_URI;
 mongoose
   .connect(MONGO_URI)
   .then(() => {
-    console.log('Connecté à MongoDB (borrow-db)');
-    connectPublisher();
+    console.log('Connecté à MongoDB (borrows-db)');
     app.listen(PORT, () => {
       console.log(`borrow-service démarré sur le port ${PORT}`);
     });

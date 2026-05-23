@@ -4,12 +4,13 @@ const { isAuthenticated } = require('../middleware/isAuthenticated');
 const {
   borrowBook,
   returnBook,
+  getMyBorrows,
   getActiveBorrows,
 } = require('../controllers/borrow.controller');
 
-// Toutes les routes nécessitent une authentification JWT
+router.get('/my', isAuthenticated, getMyBorrows);
+router.get('/', isAuthenticated, getActiveBorrows);
 router.post('/', isAuthenticated, borrowBook);
 router.put('/:id/return', isAuthenticated, returnBook);
-router.get('/', isAuthenticated, getActiveBorrows);
 
 module.exports = router;

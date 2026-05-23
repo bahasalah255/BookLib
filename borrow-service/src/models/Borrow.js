@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 const borrowSchema = new mongoose.Schema(
   {
-    utilisateurId: {
+    etudiantId: {
       type: String,
       required: true,
     },
-    utilisateurNom: {
+    etudiantNom: {
       type: String,
       required: true,
     },
@@ -28,8 +28,8 @@ const borrowSchema = new mongoose.Schema(
     },
     statut: {
       type: String,
-      enum: ['emprunte', 'retourne'],
-      default: 'emprunte',
+      enum: ['en_cours', 'retourne'],
+      default: 'en_cours',
     },
   },
   { timestamps: true }
