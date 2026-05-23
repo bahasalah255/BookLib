@@ -25,6 +25,8 @@ services:
     build: ./borrow-service
     ports:
       - '3003:3003'
+    env_file:
+      - ./borrow-service/.env
     depends_on:
       - mongo-borrows
       - rabbitmq
