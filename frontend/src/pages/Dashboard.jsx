@@ -191,8 +191,14 @@ export default function Dashboard() {
 
         {/* Main content */}
         <main className="flex-1 p-6 pb-24 md:pb-6">
+          {isAdmin() && section === SECTIONS.CATALOGUE && (
+            <>
           <h2 className="text-3xl font-bold text-primary">Tableau De Bord</h2>
           <Stats/>
+          </>
+          )}
+          
+          
           {/* Catalogue */}
           {section === SECTIONS.CATALOGUE && (
             <div className="space-y-5 pt-[170px]">
